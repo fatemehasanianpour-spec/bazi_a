@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>نگهبان آب‌ها</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Baloo Bhaijaan 2',cursive,sans-serif;direction:rtl;user-select:none;-webkit-user-select:none;
+  touch-action:manipulation;position:relative;width:100%;height:100%;}
+
+/* ================= آسمان ================= */
+.sky-bg{position:fixed;inset:0;z-index:1;transition:background 2s ease;}
+.sky-1{background:linear-gradient(180deg,#7EC8E3 0%,#A8DCEF 35%,#D4F1F9 60%,#C8E8C8 80%,#9CCB9C 100%);}
+.sky-2{background:linear-gradient(180deg,#6BB3D9 0%,#9BD0E5 35%,#C8EAF5 60%,#B5DDB5 80%,#8BBE8B 100%);}
+.sky-3{background:linear-gradient(180deg,#4A90B8 0%,#7BB8D4 35%,#AFE0F0 60%,#A5D2A5 80%,#77AA77 100%);}
+.sky-4{background:linear-gradient(180deg,#FFB347 0%,#FFCC70 30%,#FFE29A 50%,#A8D8EA 70%,#8FC98F 85%,#5FA05F 100%);}
+
+.sun{position:fixed;top:22px;right:32px;width:120px;height:120px;z-index:2;
+  background:radial-gradient(circle at 35% 35%,#FFFDE7,#FFEE58 30%,#FFB300 70%,#FF8F00);
+  border-radius:50%;
+  box-shadow:0 0 40px #FFD54F,0 0 90px rgba(255,179,0,.75),0 0 150px rgba(255,143,0,.45);
+  animation:sunPulse 4s ease-in-out infinite;}
+.sun::before{content:'';position:absolute;inset:-26px;border-radius:50%;z-index:-1;
+  background:repeating-conic-gradient(rgba(255,213,79,.55) 0deg 7deg,transparent 7deg 20deg);
+  animation:sunSpin 24s linear infinite;}
+.sun::after{content:'';position:absolute;inset:-18px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,213,79,.4),transparent 70%);
+  animation:sunRays 3s ease-in-out infinite alternate;}
+@keyframes sunPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+@keyframes sunSpin{to{transform:rotate(360deg);}}
+@keyframes sunRays{from{transform:scale(1);opacity:.6;}to{transform:scale(1.15);opacity:1;}}
+
+.cloud{position:fixed;z-index:2;opacity:.92;animation:cloudDrift linear infinite;filter:drop-shadow(0 6px 8px rgba(0,0,0,.08));}
+.cloud .puff{position:absolute;background:linear-gradient(180deg,#fff,#E8F4FB);border-radius:50%;}
+.cloud.c1{top:70px;width:150px;height:55px;animation-duration:42s;}
+.cloud.c2{top:150px;width:110px;height:42px;animation-duration:55s;animation-delay:-20s;}
+.cloud.c3{top:105px;width:85px;height:34px;animation-duration:48s;animation-delay:-35s;}
+@keyframes cloudDrift{from{transform:translateX(-220px);}to{transform:translateX(calc(100vw + 220px));}}
+
+.hill{position:fixed;bottom:120px;border-radius:50% 50% 0 0;z-index:3;}
+.hill.back{left:-15%;width:75%;height:120px;background:linear-gradient(180deg,#A5D6A5,#8BBE8B);}
+.hill.back2{right:-15%;width:70%;height:100px;background:linear-gradient(180deg,#B5DDB5,#96C796);}
+
+/* ================= دریاچه ================= */
+.ocean{position:fixed;bottom:0;left:0;width:100%;height:150px;z-index:4;overflow:hidden;}
+.wave-wrap{position:absolute;left:0;width:200%;display:flex;direction:ltr;}
+.wave-wrap svg{width:50%;height:100%;flex-shrink:0;display:block;}
+.w1{bottom:100px;height:52px;animation:waveMove 16s linear infinite;opacity:.55;}
+.w2{bottom:80px;height:52px;animation:waveMove 13s linear infinite reverse;opacity:.6;}
+.w3{bottom:60px;height:52px;animation:waveMove 11s linear infinite;opacity:.7;}
+.w4{bottom:40px;height:52px;animation:waveMove 9s linear infinite reverse;opacity:.8;}
+.w5{bottom:20px;height:52px;animation:waveMove 7s linear infinite;opacity:.9;}
+.w6{bottom:0;height:50px;animation:waveMove 6s linear infinite reverse;opacity:1;}
+@keyframes waveMove{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ================= خشکی + درختان ================= */
+.land-patch{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:min(520px,76vw);height:115px;z-index:6;
+  background:linear-gradient(180deg,#AED581 0%,#8BC34A 35%,#689F38 100%);
+  border-radius:50% 50% 0 0 / 70px 70px 0 0;
+  box-shadow:inset 0 10px 20px rgba(255,255,255,.3),inset 0 -8px 16px rgba(0,0,0,.12),0 -4px 14px rgba(0,60,90,.18);}
+.big-tree{position:absolute;bottom:6px;pointer-events:none;line-height:1;font-size:125px;
+  animation:treeSway 6s ease-in-out infinite;transform-origin:bottom center;}
+.bt-wrap{position:relative;display:inline-block;}
+.bt-glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%) scale(1.12);
+  filter:blur(5px) brightness(1.3);opacity:.5;font-size:inherit;}
+.bt-main{position:relative;display:inline-block;font-size:inherit;
+  filter:drop-shadow(4px 8px 10px rgba(0,0,0,.45)) drop-shadow(0 0 2px rgba(255,255,255,.2));}
+.bt-fruit{position:absolute;font-size:27px;filter:drop-shadow(2px 3px 3px rgba(0,0,0,.55));
+  animation:fruitBob 3s ease-in-out infinite;}
+.bt-shadow{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+  width:110px;height:18px;background:radial-gradient(ellipse,rgba(0,0,0,.32),transparent 70%);border-radius:50%;}
+@keyframes treeSway{0%,100%{transform:rotate(-1.5deg);}50%{transform:rotate(1.5deg);}}
+@keyframes fruitBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+
+/* ================= صحنه باران ================= */
+.rain-scene{position:fixed;top:0;left:0;width:100%;height:300px;z-index:12;pointer-events:none;}
+.rainbow{position:absolute;left:50%;transform:translateX(-50%);top:14px;width:400px;height:200px;
+  overflow:hidden;z-index:1;opacity:.85;animation:rbShimmer 5s ease-in-out infinite;}
+.rb{position:absolute;left:50%;top:100%;transform:translate(-50%,-50%);border-radius:50%;background:transparent;border-style:solid;}
+.rb1{width:380px;height:380px;border-width:13px;border-color:#FF5252;}
+.rb2{width:354px;height:354px;border-width:13px;border-color:#FFB74D;}
+.rb3{width:328px;height:328px;border-width:13px;border-color:#FFF176;}
+.rb4{width:302px;height:302px;border-width:13px;border-color:#81C784;}
+.rb5{width:276px;height:276px;border-width:13px;border-color:#64B5F6;}
+.rb6{width:250px;height:250px;border-width:13px;border-color:#7986CB;}
+.rb7{width:224px;height:224px;border-width:13px;border-color:#BA68C8;}
+@keyframes rbShimmer{0%,100%{opacity:.85;}50%{opacity:.62;}}
+
+/* ابرهای باران‌زا: شکل ابر واقعی، جنس قطره آب */
+.rain-cloud{position:absolute;width:130px;height:72px;z-index:2;animation:cloudBob 4s ease-in-out infinite;}
+.rain-cloud .puff{position:absolute;background:linear-gradient(180deg,#D6F2FF,#7EC8F5);border-radius:50%;
+  box-shadow:inset -4px -7px 14px rgba(0,60,120,.22),0 3px 8px rgba(0,60,120,.15);}
+
+/* باران شرشری واقعی: از ابر تا پایین صفحه، لایه‌لایه */
+.rain-drip{position:absolute;bottom:-13px;width:7px;height:15px;
+  background:linear-gradient(180deg,#8FD8FF,#29B6F6);
+  border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+  animation:drip 2s ease-in infinite;opacity:0;}
+@keyframes drip{
+  0%{transform:translateY(0) scaleY(.8);opacity:0;}
+  8%{opacity:.85;}
+  85%{opacity:.6;}
+  100%{transform:translateY(calc(100vh - 235px)) scaleY(1.15);opacity:0;}
+}
+.rc1{top:150px;left:9%;}
+.rc2{top:162px;left:39%;animation-delay:.8s;}
+.rc3{top:148px;left:68%;animation-delay:1.6s;}
+@keyframes cloudBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+.particle{position:fixed;border-radius:50%;z-index:7;pointer-events:none;
+  background:radial-gradient(circle at 30% 30%,rgba(173,216,230,.95),rgba(173,216,230,.15));
+  box-shadow:0 0 8px rgba(135,206,250,.8);animation:floatParticle linear infinite;}
+@keyframes floatParticle{0%{transform:translate(0,0) scale(.6);opacity:0;}12%{opacity:.85;}88%{opacity:.85;}
+  100%{transform:translate(var(--fx),-105vh) scale(1);opacity:0;}}
+.sparkle{position:fixed;z-index:8;pointer-events:none;font-size:18px;animation:sparkleAnim 1.4s ease forwards;}
+@keyframes sparkleAnim{0%{transform:scale(0) rotate(0);opacity:0;}40%{transform:scale(1.3) rotate(90deg);opacity:1;}100%{transform:scale(0) rotate(180deg);opacity:0;}}
+
+/* ================= صفحات ================= */
+.screen{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;transition:opacity .6s,transform .6s;}
+.screen.hidden{opacity:0;pointer-events:none;transform:scale(.96);}
+
+.start-row{display:flex;align-items:center;justify-content:center;gap:30px;width:100%;max-width:820px;flex-wrap:wrap;}
+.mascot{width:160px;height:175px;position:relative;z-index:60;flex-shrink:0;
+  animation:mascotFloat 3s ease-in-out infinite;filter:drop-shadow(0 10px 15px rgba(0,60,120,.35));}
+@keyframes mascotFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+.mascot .eye{animation:blink 4s infinite;}
+@keyframes blink{0%,90%,100%{transform:scaleY(1);}94%{transform:scaleY(.08);}}
+.mascot .arm-l{transform-origin:48px 128px;animation:waveArm 2.2s ease-in-out infinite;}
+@keyframes waveArm{0%,100%{transform:rotate(0);}50%{transform:rotate(-32deg);}}
+
+.scroll-card{position:relative;width:min(440px,94vw);padding:32px 28px 24px;
+  background:radial-gradient(circle at 20% 30%,rgba(160,120,60,.14),transparent 40%),
+    radial-gradient(circle at 80% 70%,rgba(160,120,60,.14),transparent 40%),
+    linear-gradient(160deg,#F5E6C8,#EEDCB0 45%,#E7D29E);
+  border:3px solid #C9A227;border-radius:14px;text-align:center;
+  box-shadow:0 18px 45px rgba(0,0,0,.3),inset 0 0 30px rgba(160,120,50,.28),0 0 0 6px rgba(201,162,39,.28);
+  animation:scrollFloat 3.5s ease-in-out infinite;}
+@keyframes scrollFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+.scroll-card::before,.scroll-card::after{content:'';position:absolute;top:-14px;width:26px;height:calc(100% + 28px);
+  background:linear-gradient(90deg,#8B5A2B,#C9A227 30%,#E7D29E 50%,#C9A227 70%,#8B5A2B);
+  border-radius:13px;box-shadow:0 6px 14px rgba(0,0,0,.4);}
+.scroll-card::before{right:-16px;} .scroll-card::after{left:-16px;}
+.bismillah{font-size:20px;color:#7A5C00;font-weight:800;margin-bottom:6px;}
+.game-title{font-size:36px;font-weight:800;line-height:1.2;margin:4px 0 12px;
+  background:linear-gradient(45deg,#0277BD,#00ACC1,#26A69A);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.mission-text{font-size:15px;line-height:2;color:#5B4300;font-weight:600;
+  background:rgba(255,250,235,.55);border:2px dashed #C9A227;border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.name-input{width:100%;padding:12px 18px;font-size:18px;font-family:inherit;text-align:center;
+  border:3px solid #C9A227;border-radius:50px;outline:none;background:#FFFDF5;color:#4A3600;margin-bottom:12px;transition:.3s;}
+.name-input:focus{border-color:#0288D1;box-shadow:0 0 14px rgba(2,136,209,.35);}
+
+.btn3d{font-family:inherit;font-size:20px;font-weight:800;color:#fff;border:none;cursor:pointer;
+  padding:13px 34px;border-radius:50px;transition:.15s;text-shadow:0 2px 4px rgba(0,0,0,.25);}
+.btn-go{background:linear-gradient(180deg,#4FC3F7,#1E88E5);box-shadow:0 7px 0 #1565C0,0 13px 22px rgba(0,0,0,.28);}
+.btn-next{background:linear-gradient(180deg,#FFA726,#FB8C00);box-shadow:0 7px 0 #E65100,0 13px 22px rgba(0,0,0,.28);}
+.btn-again{background:linear-gradient(180deg,#66BB6A,#43A047);box-shadow:0 7px 0 #2E7D32,0 13px 22px rgba(0,0,0,.28);}
+.btn3d:hover{transform:translateY(-3px) scale(1.03);}
+.btn3d:active{transform:translateY(3px);}
+.designer{margin-top:14px;font-size:14px;color:#7A5C00;font-weight:700;}
+
+/* ================= پنل چپ ================= */
+.left-panel{position:fixed;top:10px;left:10px;z-index:100;display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+.star-name-box{background:rgba(255,255,255,.92);border-radius:14px;padding:5px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  border:2px solid #FFD700;box-shadow:0 3px 10px rgba(0,0,0,.15);}
+.star-name-box .pname{font-size:13px;font-weight:800;color:#4A148C;}
+.stars-row{display:flex;gap:4px;}
+.star{font-size:20px;filter:grayscale(1) brightness(.5) opacity(.4);transition:.5s;}
+.star.lit{filter:none;animation:starPop .7s;}
+@keyframes starPop{0%{transform:scale(0) rotate(-180deg);}60%{transform:scale(1.6);}100%{transform:scale(1);}}
+
+.indicators-box{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;
+  background:linear-gradient(135deg,#FF6B6B,#FFA500,#FFD700,#4CAF50,#2196F3,#9C27B0);
+  padding:6px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.2);}
+.ind-drop{width:20px;height:28px;}
+.ind-drop svg{width:100%;height:100%;}
+.ind-drop .df{fill:#B0BEC5;transition:.4s;}
+.ind-drop.lit .df{fill:#29B6F6;filter:drop-shadow(0 0 4px #29B6F6);}
+.ind-drop.dim .df{fill:#37474F;}
+
+/* ================= کادر سوال ================= */
+.stage-question{position:fixed;top:12px;right:12px;z-index:99;max-width:250px;
+  padding:11px 16px;text-align:center;font-size:16px;font-weight:800;color:#1A1A1A;
+  background:linear-gradient(135deg,#FFF9C4,#FFF176);border:3px solid #FDD835;border-radius:16px;
+  box-shadow:0 5px 14px rgba(0,0,0,.16),inset 0 0 12px rgba(253,216,53,.3);
+  animation:qPulse 2.4s ease-in-out infinite;}
+.stage-question .red{color:#D32F2F;font-size:18px;}
+@keyframes qPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.025);}}
+
+/* ================= جدول کارت‌ها (فونت وزیر سنگین) ================= */
+.cards-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:16px;
+  width:min(430px,92vw);margin-top:110px;z-index:25;}
+.letter-card{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-family:'Vazir','Baloo Bhaijaan 2',sans-serif;font-size:46px;font-weight:700;color:#1A1A1A;
+  cursor:pointer;position:relative;
+  background:linear-gradient(145deg,#FFFFFF,#E3F2FD);border-radius:18px;transition:.2s;
+  border:3px solid #64B5F6;
+  box-shadow:0 6px 0 #90CAF9,0 10px 18px rgba(0,0,0,.15),inset 0 2px 6px rgba(255,255,255,.9);}
+.letter-card:hover{transform:translateY(-5px) scale(1.06);}
+.letter-card:active{transform:translateY(2px) scale(.97);}
+.letter-card.correct{background:linear-gradient(145deg,#A5D6A7,#66BB6A);border-color:#388E3C;color:#fff;
+  box-shadow:0 6px 0 #2E7D32,0 10px 20px rgba(76,175,80,.45);pointer-events:none;animation:correctPop .4s;}
+.letter-card.wrong{animation:wrongShake .4s;border-color:#EF5350;background:linear-gradient(145deg,#FFCDD2,#EF9A9A);pointer-events:none;}
+@keyframes correctPop{0%{transform:scale(1);}50%{transform:scale(1.25);}100%{transform:scale(1);}}
+@keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-9px);}75%{transform:translateX(9px);}}
+
+/* ================= قطره‌های باران کلمات (کشیده‌تر + فونت وزیر سنگین) ================= */
+#rain-container{position:fixed;inset:0;z-index:40;pointer-events:none;}
+.rain-drop{position:absolute;width:106px;height:168px;display:flex;align-items:center;justify-content:center;
+  pointer-events:all;cursor:pointer;animation:dropWobble 3s ease-in-out infinite;}
+.rain-drop svg{position:absolute;inset:0;width:100%;height:100%;}
+.rain-drop .drop-body{fill:rgba(120,190,240,.82);stroke:#1E88E5;stroke-width:2.5;}
+.rain-drop .drop-shine{fill:rgba(255,255,255,.55);}
+.rain-drop .drop-text{position:relative;z-index:2;font-family:'Vazir','Baloo Bhaijaan 2',sans-serif;
+  font-size:27px;font-weight:700;color:#0D0D0D;text-align:center;padding:6px;
+  text-shadow:0 1px 2px rgba(255,255,255,.6);}
+@keyframes dropWobble{0%,100%{transform:rotate(-2deg);}50%{transform:rotate(2deg);}}
+.rain-drop.caught-correct{animation:caughtGood .6s ease forwards;pointer-events:none;}
+.rain-drop.caught-wrong{animation:caughtBad .5s ease forwards;pointer-events:none;}
+@keyframes caughtGood{0%{transform:scale(1);opacity:1;}50%{transform:scale(1.25);opacity:1;}100%{transform:scale(0);opacity:0;}}
+@keyframes caughtBad{0%{transform:scale(1);opacity:1;}100%{transform:scale(.3) translateY(25px);opacity:0;}}
+
+/* سطل بدون دسته */
+.catch-bucket{position:absolute;width:115px;height:100px;z-index:55;pointer-events:none;transform:scale(0);}
+.catch-bucket.show{animation:bucketAppear .35s cubic-bezier(.68,-.55,.265,1.55) forwards;}
+@keyframes bucketAppear{to{transform:scale(1);}}
+.catch-bucket.fadeout{animation:bucketFade .4s forwards;}
+@keyframes bucketFade{to{transform:scale(0);opacity:0;}}
+.cb-inner{width:100%;height:100%;}
+.cb-inner.happy{animation:bucketLaugh .6s .35s;}
+.cb-inner.sad{animation:bucketSad .5s .35s;}
+.catch-bucket svg{width:100%;height:100%;filter:drop-shadow(0 6px 8px rgba(0,0,0,.3));}
+.bk-eyes{transform-box:fill-box;transform-origin:center;animation:bkBlink 2.4s infinite;}
+@keyframes bkBlink{0%,90%,100%{transform:scaleY(1);}94%{transform:scaleY(.1);}}
+@keyframes bucketLaugh{0%{transform:rotate(0);}30%{transform:rotate(-6deg) scale(1.05);}60%{transform:rotate(6deg) scale(1.05);}100%{transform:rotate(0) scale(1);}}
+@keyframes bucketSad{0%,100%{transform:rotate(0) translateY(0);}50%{transform:rotate(-3deg) translateY(4px);}}
+
+.splash-p{position:fixed;width:7px;height:7px;background:#4FC3F7;border-radius:50%;z-index:45;pointer-events:none;
+  animation:splashFly .6s ease-out forwards;}
+@keyframes splashFly{0%{transform:translate(0,0) scale(1);opacity:1;}
+  100%{transform:translate(var(--sx),var(--sy)) scale(0);opacity:0;}}
+
+.golden-overlay{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.golden-word{position:relative;font-size:95px;font-weight:800;color:#FFD700;transform:scale(0);
+  transition:transform .45s cubic-bezier(.68,-.55,.265,1.55);
+  text-shadow:0 0 20px #FFD700,0 0 40px #FFA500,0 0 60px #FF8C00,3px 3px 6px rgba(0,0,0,.35);}
+.golden-overlay.show .golden-word{transform:scale(1);}
+.golden-word::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:230px;height:230px;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle,rgba(255,215,0,.6),rgba(255,165,0,.25) 55%,transparent 72%);
+  animation:haloPulse .9s ease-in-out infinite;}
+@keyframes haloPulse{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.18);}}
+
+.countdown-overlay{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;
+  background:rgba(2,60,110,.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:.3s;}
+.countdown-overlay.show{opacity:1;pointer-events:all;}
+.countdown-num{font-size:150px;font-weight:800;color:#FFD700;
+  text-shadow:0 0 30px #FFA500,0 0 60px #FF8C00,4px 4px 8px rgba(0,0,0,.4);}
+.countdown-num.pop{animation:numPop .9s ease;}
+@keyframes numPop{0%{transform:scale(2.2);opacity:0;}40%{transform:scale(1);opacity:1;}100%{transform:scale(1);}}
+
+.stage-overlay{position:fixed;inset:0;z-index:650;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:.3s;}
+.stage-overlay.show{opacity:1;pointer-events:all;}
+.stage-overlay-card{background:linear-gradient(160deg,#FFF9E8,#F5E6C8);border:3px solid #C9A227;border-radius:22px;
+  padding:28px;text-align:center;max-width:380px;transform:scale(.8);transition:.3s;
+  box-shadow:0 18px 45px rgba(0,0,0,.35);}
+.stage-overlay.show .stage-overlay-card{transform:scale(1);}
+.overlay-star{font-size:50px;margin:8px 0;filter:grayscale(1) opacity(.3);}
+.overlay-star.lit{filter:none;animation:starPop .8s;}
+
+/* ================= کارنامه پایانی ================= */
+.result-card{background:linear-gradient(160deg,#FFF9E8,#F0DFB8);border:3px solid #C9A227;border-radius:26px;
+  padding:32px;text-align:center;width:min(430px,92vw);box-shadow:0 20px 50px rgba(0,0,0,.32);}
+.result-title{font-size:28px;font-weight:800;color:#2E7D32;margin-bottom:8px;}
+.guardian-title{font-size:24px;font-weight:800;color:#E65100;margin:8px 0;text-shadow:0 0 12px rgba(255,165,0,.6);}
+.result-stars{display:flex;justify-content:center;align-items:center;gap:16px;margin:20px 0;}
+.r-star{line-height:1;transition:.3s;}
+.r-star.earned{font-size:58px;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.25)) drop-shadow(0 0 12px rgba(255,200,0,.9));
+  animation:starBounce .7s cubic-bezier(.68,-.55,.265,1.55) both;}
+.r-star.empty{font-size:46px;color:#B0BEC5;opacity:.38;filter:grayscale(1);}
+@keyframes starBounce{0%{transform:scale(0) rotate(-180deg);}60%{transform:scale(1.4);}100%{transform:scale(1);}}
+.result-message{font-size:17px;color:#5B4300;line-height:2;margin-bottom:14px;font-weight:600;}
+
+/* ================= ریسپانسیو ================= */
+@media (max-width:600px){
+  .game-title{font-size:30px;}
+  .mascot{width:120px;height:132px;}
+  .start-row{gap:15px;}
+  .cards-grid{gap:10px;width:min(350px,94vw);margin-top:130px;}
+  .letter-card{font-size:38px;border-radius:14px;}
+  .rain-drop{width:92px;height:148px;}
+  .rain-drop .drop-text{font-size:23px;}
+  .golden-word{font-size:74px;}
+  .countdown-num{font-size:110px;}
+  .star{font-size:17px;}
+  .star-name-box .pname{font-size:11px;}
+  .ind-drop{width:16px;height:23px;}
+  .stage-question{max-width:180px;font-size:13px;padding:8px 10px;}
+  .stage-question .red{font-size:15px;}
+  .big-tree{font-size:95px !important;}
+  .bt-fruit{font-size:20px !important;}
+  .rainbow{transform:translateX(-50%) scale(.8);transform-origin:top center;}
+  .rain-cloud{transform:scale(.85);}
+  .r-star.earned{font-size:46px;}
+  .r-star.empty{font-size:38px;}
+  .sun{width:95px;height:95px;top:20px;right:20px;}
+}
+@media (max-width:400px){
+  .cards-grid{width:min(310px,96vw);}
+  .letter-card{font-size:32px;}
+  .rain-drop{width:82px;height:132px;}
+  .rain-drop .drop-text{font-size:20px;}
+  .stage-question{max-width:150px;font-size:12px;}
+  .big-tree{font-size:80px !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="sky-bg sky-1" id="sky"></div>
+<div class="sun"></div>
+<div class="hill back"></div>
+<div class="hill back2"></div>
+
+<div class="cloud c1">
+  <span class="puff" style="width:70px;height:40px;left:0;top:12px;"></span>
+  <span class="puff" style="width:55px;height:50px;left:35px;top:0;"></span>
+  <span class="puff" style="width:60px;height:38px;left:80px;top:14px;"></span>
+</div>
+<div class="cloud c2">
+  <span class="puff" style="width:55px;height:32px;left:0;top:8px;"></span>
+  <span class="puff" style="width:42px;height:38px;left:28px;top:0;"></span>
+  <span class="puff" style="width:48px;height:30px;left:60px;top:10px;"></span>
+</div>
+<div class="cloud c3">
+  <span class="puff" style="width:42px;height:26px;left:0;top:6px;"></span>
+  <span class="puff" style="width:34px;height:30px;left:22px;top:0;"></span>
+</div>
+
+<div class="ocean" id="ocean"></div>
+
+<div class="land-patch" id="land-patch">
+  <div class="big-tree" id="tree-left" style="left:10%;animation-delay:0s;"></div>
+  <div class="big-tree" id="tree-right" style="right:10%;animation-delay:1.2s;"></div>
+</div>
+
+<!-- صحنه باران: رنگین‌کمان + ابرهای باران‌زا -->
+<div class="rain-scene" id="rain-scene" style="display:none;">
+  <div class="rainbow">
+    <div class="rb rb1"></div><div class="rb rb2"></div><div class="rb rb3"></div>
+    <div class="rb rb4"></div><div class="rb rb5"></div><div class="rb rb6"></div><div class="rb rb7"></div>
+  </div>
+  <div class="rain-cloud rc1"></div>
+  <div class="rain-cloud rc2"></div>
+  <div class="rain-cloud rc3"></div>
+</div>
+
+<div id="particles"></div>
+
+<!-- ============ صفحه شروع ============ -->
+<div class="screen" id="start-screen">
+  <div class="start-row">
+    <div class="scroll-card">
+      <div class="bismillah">به نام خدا</div>
+      <h1 class="game-title">نگهبان آب‌ها</h1>
+      <div class="mission-text">
+        آیا آماده هستی تا از آب‌ها محافظت کنی؟<br>
+        مهارت شما در چهار مرحله ارزیابی می‌شود، اگر از این ارزیابی‌ها موفق بیرون آمدی، نشانِ عنوان «نگهبان آب‌ها» را دریافت می‌کنی. آماده‌ای؟
+      </div>
+      <input type="text" class="name-input" id="student-name" placeholder="اسمت رو اینجا بنویس..." maxlength="20">
+      <br>
+      <button class="btn3d btn-go" onclick="startGame()">فهمیدم، بریم! 🚀</button>
+      <div class="designer">طراح: خانم حسنیان</div>
+    </div>
+    <div class="mascot">
+      <svg viewBox="0 0 200 220">
+        <defs>
+          <radialGradient id="dropGrad" cx="38%" cy="32%" r="80%">
+            <stop offset="0%" stop-color="#B3E5FC"/>
+            <stop offset="45%" stop-color="#4FC3F7"/>
+            <stop offset="100%" stop-color="#0288D1"/>
+          </radialGradient>
+        </defs>
+        <path d="M100 18 C100 18 42 92 42 140 C42 176 68 202 100 202 C132 202 158 176 158 140 C158 92 100 18 100 18 Z" fill="url(#dropGrad)" stroke="#0277BD" stroke-width="3"/>
+        <ellipse cx="72" cy="118" rx="14" ry="26" fill="rgba(255,255,255,.5)" transform="rotate(-18 72 118)"/>
+        <g class="arm-l">
+          <path d="M46 128 Q22 118 16 96" stroke="#29B6F6" stroke-width="13" fill="none" stroke-linecap="round"/>
+          <circle cx="16" cy="96" r="9" fill="#4FC3F7" stroke="#0277BD" stroke-width="2"/>
+        </g>
+        <path d="M154 132 Q176 140 182 158" stroke="#29B6F6" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <circle cx="182" cy="158" r="9" fill="#4FC3F7" stroke="#0277BD" stroke-width="2"/>
+        <g class="eye" style="transform-origin:80px 128px;"><ellipse cx="80" cy="128" rx="8" ry="11" fill="#1A1A1A"/><circle cx="83" cy="124" r="3.5" fill="#fff"/></g>
+        <g class="eye" style="transform-origin:120px 128px;"><ellipse cx="120" cy="128" rx="8" ry="11" fill="#1A1A1A"/><circle cx="123" cy="124" r="3.5" fill="#fff"/></g>
+        <circle cx="68" cy="150" r="9" fill="rgba(255,130,150,.5)"/>
+        <circle cx="132" cy="150" r="9" fill="rgba(255,130,150,.5)"/>
+        <path d="M78 156 Q100 174 122 156" stroke="#1A1A1A" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ============ صفحه بازی ============ -->
+<div class="screen hidden" id="game-screen" style="justify-content:flex-start;padding-top:0;">
+  <div class="left-panel">
+    <div class="star-name-box">
+      <span class="pname" id="pname-box"></span>
+      <div class="stars-row">
+        <span class="star" id="star-1">⭐</span>
+        <span class="star" id="star-2">⭐</span>
+        <span class="star" id="star-3">⭐</span>
+        <span class="star" id="star-4">⭐</span>
+      </div>
+    </div>
+    <div class="indicators-box" id="indicators-box"></div>
+  </div>
+
+  <div class="stage-question" id="stage-question"></div>
+
+  <div class="cards-grid" id="cards-container"></div>
+  <div id="rain-container"></div>
+</div>
+
+<!-- ============ صفحه نتیجه ============ -->
+<div class="screen hidden" id="result-screen">
+  <div class="result-card">
+    <div class="result-title">بازی تموم شد!</div>
+    <div class="guardian-title" id="guardian-title" style="display:none;">🏅 نگهبان آب‌ها 🏅</div>
+    <div class="result-stars" id="result-stars"></div>
+    <div class="result-message" id="result-message"></div>
+    <button class="btn3d btn-again" onclick="restartGame()">بازی دوباره 🔄</button>
+  </div>
+</div>
+
+<div class="countdown-overlay" id="countdown-overlay">
+  <div class="countdown-num" id="countdown-num">۳</div>
+</div>
+
+<div class="stage-overlay" id="stage-overlay">
+  <div class="stage-overlay-card">
+    <h2 style="color:#2E7D32;margin-bottom:4px;">آفرین! 🌟</h2>
+    <div class="overlay-star" id="overlay-star">⭐</div>
+    <p style="font-size:17px;color:#5B4300;font-weight:700;" id="stage-overlay-text"></p>
+    <button class="btn3d btn-next" style="margin-top:14px;" onclick="closeStageOverlay()">ادامه</button>
+  </div>
+</div>
+
+<script>
+let playerName='',currentStage=1,starsEarned=0;
+let stageTotalTargets=5,slotIndex=0,maxDroplets=5,gameActive=false;
+let rainInterval=null,animFrame=null,audioCtx=null;
+let activeDrops=[],lastLane=-1,processedCount=0,totalSpawned=0;
+
+// موقعیت سه ابر باران‌زا (هماهنگ با CSS: rc1/rc2/rc3)
+const cloudDefs=[
+  {leftPct:9, top:150},
+  {leftPct:39, top:162},
+  {leftPct:68, top:148}
+];
+
+const baseCards=[
+  {text:'آ',type:'madda'},{text:'آ',type:'madda'},{text:'آ',type:'madda'},{text:'آ',type:'madda'},{text:'آ',type:'madda'},
+  {text:'ا',type:'plain'},{text:'ا',type:'plain'},{text:'ا',type:'plain'},{text:'ا',type:'plain'},{text:'ا',type:'plain'},
+  {text:'اَ',type:'fatha'},{text:'اَ',type:'fatha'},{text:'اَ',type:'fatha'},
+  {text:'اُ',type:'damma'},{text:'اُ',type:'damma'},{text:'اُ',type:'damma'}
+];
+const stage3Words=[
+  {text:'آب',correct:true},{text:'آلبالو',correct:true},{text:'آناناس',correct:true},
+  {text:'آبی',correct:true},{text:'آهو',correct:true},{text:'آتش',correct:true},
+  {text:'آسمان',correct:true},{text:'آمد',correct:true},{text:'آچار',correct:true},{text:'آدم برفی',correct:true},
+  {text:'اُردک',correct:false},{text:'اَنار',correct:false},{text:'اُتاق',correct:false},
+  {text:'اَبر',correct:false},{text:'اَمین',correct:false},{text:'سیب',correct:false},
+  {text:'گل',correct:false},{text:'کتاب',correct:false},{text:'درخت',correct:false},{text:'مادر',correct:false}
+];
+const stage4Words=[
+  {text:'نان',correct:true},{text:'دریا',correct:true},{text:'مادر',correct:true},
+  {text:'بابا',correct:true},{text:'یاس',correct:true},{text:'باد',correct:true},
+  {text:'بام',correct:true},{text:'بادبادک',correct:true},{text:'بادکنک',correct:true},{text:'باران',correct:true},
+  {text:'آب',correct:false},{text:'آبی',correct:false},{text:'آتش',correct:false},
+  {text:'آمد',correct:false},{text:'آهو',correct:false},{text:'اَمین',correct:false},
+  {text:'اُتاق',correct:false},{text:'اُردک',correct:false}
+];
+
+function toFa(n){return String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);}
+
+function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
+function playWaterDrop(){initAudio();const t=audioCtx.currentTime;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);
+  o.type='sine';o.frequency.setValueAtTime(1200,t);o.frequency.exponentialRampToValueAtTime(300,t+.08);
+  g.gain.setValueAtTime(.3,t);g.gain.exponentialRampToValueAtTime(.01,t+.1);o.start(t);o.stop(t+.1);}
+function playAabSound(){initAudio();const t=audioCtx.currentTime;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);
+  o.type='triangle';o.frequency.setValueAtTime(340,t);o.frequency.linearRampToValueAtTime(520,t+.14);
+  o.frequency.linearRampToValueAtTime(240,t+.42);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.32,t+.05);
+  g.gain.linearRampToValueAtTime(.22,t+.3);g.gain.exponentialRampToValueAtTime(.01,t+.5);o.start(t);o.stop(t+.5);}
+function playCoinSound(){initAudio();const t=audioCtx.currentTime;
+  [987.77,1318.51].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.connect(g);g.connect(audioCtx.destination);o.type='square';o.frequency.value=f;
+    const st=t+i*.08;g.gain.setValueAtTime(.14,st);g.gain.exponentialRampToValueAtTime(.01,st+(i===0?.08:.4));
+    o.start(st);o.stop(st+.5);});}
+function playWrongSound(){initAudio();const t=audioCtx.currentTime;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);
+  o.type='sawtooth';o.frequency.setValueAtTime(250,t);o.frequency.exponentialRampToValueAtTime(120,t+.3);
+  g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.01,t+.35);o.start(t);o.stop(t+.35);}
+function playSplash(){initAudio();const t=audioCtx.currentTime;
+  const bs=audioCtx.sampleRate*.25,buf=audioCtx.createBuffer(1,bs,audioCtx.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<bs;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/bs,2);
+  const s=audioCtx.createBufferSource();s.buffer=buf;
+  const f=audioCtx.createBiquadFilter();f.type='lowpass';f.frequency.value=900;
+  const g=audioCtx.createGain();g.gain.setValueAtTime(.22,t);g.gain.exponentialRampToValueAtTime(.01,t+.25);
+  s.connect(f);f.connect(g);g.connect(audioCtx.destination);s.start(t);}
+function playCountdownBeep(f){initAudio();const t=audioCtx.currentTime;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);
+  o.type='sine';o.frequency.value=f?880:440;g.gain.setValueAtTime(.3,t);
+  g.gain.exponentialRampToValueAtTime(.01,t+(f?.4:.15));o.start(t);o.stop(t+.5);}
+
+function buildOcean(){
+  const ocean=document.getElementById('ocean');
+  const colors=['#B3E5FC','#81D4FA','#4FC3F7','#29B6F6','#039BE5','#0277BD'];
+  let html='';
+  for(let i=0;i<6;i++){
+    const h=52;
+    const path=`M0,${h*.5} C60,${h*.9} 120,${h*.1} 200,${h*.5} C280,${h*.9} 340,${h*.15} 420,${h*.5} C500,${h*.85} 560,${h*.2} 640,${h*.5} L640,${h} L0,${h} Z`;
+    html+=`<div class="wave-wrap w${i+1}">
+      <svg viewBox="0 0 640 ${h}" preserveAspectRatio="none"><path d="${path}" fill="${colors[i]}"/></svg>
+      <svg viewBox="0 0 640 ${h}" preserveAspectRatio="none"><path d="${path}" fill="${colors[i]}"/></svg>
+    </div>`;
+  }
+  ocean.innerHTML=html;
+}
+
+// ================= ابرهای باران‌زا: ابر واقعی + بارون شرشری لایه‌لایه =================
+function buildRainClouds(){
+  document.querySelectorAll('.rain-cloud').forEach(c=>{
+    let html=`
+      <span class="puff" style="width:66px;height:50px;left:0;top:16px;"></span>
+      <span class="puff" style="width:56px;height:58px;left:30px;top:0;"></span>
+      <span class="puff" style="width:62px;height:46px;left:62px;top:18px;"></span>
+    `;
+    // بارون شرشری با تنوع تصادفی (لایه‌لایه، مثل بارون واقعی)
+    for(let i=0;i<8;i++){
+      const left=(6+i*15+Math.random()*5).toFixed(1);
+      const delay=(Math.random()*2.2).toFixed(2);
+      const dur=(1.8+Math.random()*1.4).toFixed(2);
+      html+=`<span class="rain-drip" style="left:${left}px;animation-delay:${delay}s;animation-duration:${dur}s;"></span>`;
+    }
+    c.innerHTML=html;
+  });
+}
+
+// ================= درختان =================
+const fruitPos=[
+  {top:'12%',left:'32%'},{top:'26%',left:'56%'},{top:'8%',left:'54%'},
+  {top:'38%',left:'28%'},{top:'32%',left:'66%'},{top:'20%',left:'18%'}
+];
+function makeTreeHTML(treeEmoji,fruits){
+  let fh='';
+  fruits.forEach((f,i)=>{
+    const p=fruitPos[i%fruitPos.length];
+    fh+=`<span class="bt-fruit" style="top:${p.top};left:${p.left};animation-delay:${i*.4}s;">${f}</span>`;
+  });
+  return `<span class="bt-shadow"></span>
+    <span class="bt-wrap"><span class="bt-glow">${treeEmoji}</span><span class="bt-main">${treeEmoji}</span></span>${fh}`;
+}
+function buildTrees(stage){
+  let cfg;
+  if(stage===1)cfg={tree:'🌳',fruits:['🌸','🌸','🌸','🌸']};
+  else cfg={tree:'🌳',fruits:['🍒','🍒','🍒','🍒']};
+  document.getElementById('tree-left').innerHTML=makeTreeHTML(cfg.tree,cfg.fruits);
+  document.getElementById('tree-right').innerHTML=makeTreeHTML(cfg.tree,cfg.fruits);
+}
+
+function getQuestionHTML(stage){
+  if(stage===1)return 'هرجا نشانه «<span class="red">آ اول</span>» دیدی ضربه بزن!';
+  if(stage===2)return 'هرجا نشانه «<span class="red">ا غیر اول</span>» دیدی ضربه بزن!';
+  if(stage===3)return 'روی قطره‌هایی که «<span class="red">آ اول</span>» دارند ضربه بزن!';
+  return 'روی قطره‌هایی که «<span class="red">ا غیر اول</span>» دارند ضربه بزن!';
+}
+
+function createParticles(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');p.className='particle';
+    const s=Math.random()*7+3;p.style.width=s+'px';p.style.height=s+'px';
+    p.style.left=Math.random()*100+'vw';p.style.bottom='-20px';
+    p.style.setProperty('--fx',(Math.random()*80-40)+'px');
+    p.style.animationDuration=(Math.random()*10+9)+'s';
+    p.style.animationDelay=(Math.random()*12)+'s';
+    c.appendChild(p);
+  }
+}
+function startSparkles(){
+  setInterval(()=>{
+    if(!gameActive)return;
+    const oc=document.getElementById('ocean').getBoundingClientRect();
+    const sp=document.createElement('div');sp.className='sparkle';sp.textContent='✨';
+    sp.style.left=(oc.left+Math.random()*oc.width)+'px';
+    sp.style.top=(oc.top+Math.random()*oc.height)+'px';
+    document.body.appendChild(sp);setTimeout(()=>sp.remove(),1500);
+  },2200);
+}
+
+function showCountdown(cb){
+  const ov=document.getElementById('countdown-overlay'),num=document.getElementById('countdown-num');
+  ov.classList.add('show');let count=3;
+  num.textContent=toFa(count);num.classList.remove('pop');void num.offsetWidth;num.classList.add('pop');
+  playCountdownBeep(false);
+  const iv=setInterval(()=>{
+    count--;
+    if(count>0){num.textContent=toFa(count);num.classList.remove('pop');void num.offsetWidth;num.classList.add('pop');playCountdownBeep(false);}
+    else{clearInterval(iv);num.textContent='بریم!';num.classList.remove('pop');void num.offsetWidth;num.classList.add('pop');
+      playCountdownBeep(true);setTimeout(()=>{ov.classList.remove('show');cb();},650);}
+  },900);
+}
+
+function startGame(){
+  const name=document.getElementById('student-name').value.trim();
+  if(!name){const inp=document.getElementById('student-name');inp.style.borderColor='#EF5350';inp.placeholder='لطفاً اسمت رو بنویس!';return;}
+  playerName=name;initAudio();playWaterDrop();
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('game-screen').classList.remove('hidden');
+  document.getElementById('pname-box').textContent=playerName;
+  showCountdown(()=>startStage(1));
+}
+
+function startStage(stage){
+  currentStage=stage;slotIndex=0;gameActive=true;
+  activeDrops=[];lastLane=-1;processedCount=0;totalSpawned=0;
+  document.getElementById('cards-container').innerHTML='';
+  document.getElementById('rain-container').innerHTML='';
+  document.getElementById('cards-container').style.display='grid';
+  if(rainInterval){clearInterval(rainInterval);rainInterval=null;}
+  if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
+
+  document.getElementById('sky').className='sky-bg sky-'+stage;
+  maxDroplets=(stage<=2)?5:10;
+  stageTotalTargets=maxDroplets;
+  createIndicators();
+  document.getElementById('stage-question').innerHTML=getQuestionHTML(stage);
+
+  const showIsland=(stage<=2);
+  document.getElementById('land-patch').style.display=showIsland?'block':'none';
+  document.getElementById('rain-scene').style.display=showIsland?'none':'block';
+  if(showIsland)buildTrees(stage);
+
+  if(stage===1)buildCardGrid('madda');
+  else if(stage===2)buildCardGrid('plain');
+  else if(stage===3){document.getElementById('cards-container').style.display='none';startRain(stage3Words);startGameLoop();}
+  else{document.getElementById('cards-container').style.display='none';startRain(stage4Words);startGameLoop();}
+}
+
+function createIndicators(){
+  const box=document.getElementById('indicators-box');box.innerHTML='';
+  for(let i=0;i<maxDroplets;i++){
+    const d=document.createElement('div');d.className='ind-drop';
+    d.innerHTML=`<svg viewBox="0 0 24 32"><path class="df" d="M12 0C12 0 2 14 2 20C2 26.6 6.4 32 12 32C17.6 32 22 26.6 22 20C22 14 12 0 12 0Z"/></svg>`;
+    box.appendChild(d);
+  }
+}
+function fillSlot(isCorrect){
+  const slots=document.querySelectorAll('.ind-drop');
+  if(slotIndex<slots.length){slots[slotIndex].classList.add(isCorrect?'lit':'dim');}
+  slotIndex++;
+  if(slotIndex>=maxDroplets){setTimeout(completeStage,600);}
+}
+function lightStar(n){const s=document.getElementById('star-'+n);if(s)s.classList.add('lit');}
+
+function buildCardGrid(targetType){
+  const container=document.getElementById('cards-container');container.innerHTML='';
+  const cols=4,rows=4;
+  const targetPositions=pickSpreadPositions(5,cols,rows);
+  const targets=baseCards.filter(c=>c.type===targetType);
+  const others=shuffle(baseCards.filter(c=>c.type!==targetType));
+  const grid=new Array(cols*rows).fill(null);
+  targetPositions.forEach((pos,i)=>{grid[pos]={...targets[i],isTarget:true};});
+  let oi=0;for(let i=0;i<grid.length;i++){if(!grid[i])grid[i]={...others[oi++],isTarget:false};}
+  grid.forEach(card=>{
+    const el=document.createElement('div');el.className='letter-card';el.textContent=card.text;el.dataset.correct=card.isTarget;
+    el.addEventListener('click',()=>handleCardClick(el));
+    el.addEventListener('touchstart',e=>{e.preventDefault();handleCardClick(el);});
+    container.appendChild(el);
+  });
+}
+function pickSpreadPositions(count,cols,rows){
+  for(let att=0;att<800;att++){
+    const positions=shuffle([...Array(cols*rows).keys()]);const picked=[];
+    for(const pos of positions){
+      if(picked.length>=count)break;
+      const r=Math.floor(pos/cols),c=pos%cols;let ok=true;
+      for(const s of picked){const sr=Math.floor(s/cols),sc=s%cols;if(Math.abs(sr-r)+Math.abs(sc-c)===1){ok=false;break;}}
+      if(ok)picked.push(pos);
+    }
+    if(picked.length>=count)return picked;
+  }
+  return [...Array(count).keys()];
+}
+function handleCardClick(card){
+  if(!gameActive||card.classList.contains('correct')||card.classList.contains('wrong'))return;
+  playWaterDrop();
+  const isCorrect=card.dataset.correct==='true';
+  if(isCorrect){
+    card.classList.add('correct');
+    const idx=slotIndex;
+    playAabSound();setTimeout(playCoinSound,320);
+    showGoldenWord(card.textContent,idx,()=>fillSlot(true));
+  }else{
+    card.classList.add('wrong');
+    playWrongSound();
+    fillSlot(false);
+  }
+}
+
+function buildSpacedSequence(words){
+  let corrects=shuffle(words.filter(w=>w.correct)),wrongs=shuffle(words.filter(w=>!w.correct));
+  const seq=[];let lastCorrect=false;
+  while(corrects.length||wrongs.length){
+    let pickWrong;
+    if(!corrects.length)pickWrong=true;else if(!wrongs.length)pickWrong=false;
+    else if(lastCorrect)pickWrong=true;else pickWrong=Math.random()<0.45;
+    if(pickWrong&&wrongs.length){seq.push(wrongs.pop());lastCorrect=false;}
+    else if(corrects.length){seq.push(corrects.pop());lastCorrect=true;}
+    else{seq.push(wrongs.pop());lastCorrect=false;}
+  }
+  return seq;
+}
+
+// انتخاب ابر برای بارش (با جلوگیری از تداخل قطره‌ها)
+function pickCloudLane(){
+  const occupied=new Set();
+  activeDrops.forEach(d=>{if(d.active&&d.y<320)occupied.add(d.cloudIdx);});
+  const available=[];
+  for(let i=0;i<cloudDefs.length;i++){if(!occupied.has(i))available.push(i);}
+  if(!available.length)return Math.floor(Math.random()*cloudDefs.length);
+  let idx,tries=0;
+  do{idx=available[Math.floor(Math.random()*available.length)];tries++;}
+  while(idx===lastLane&&available.length>1&&tries<10);
+  lastLane=idx;return idx;
+}
+
+function startRain(words){
+  let seq=buildSpacedSequence(words);
+  let idx=0;
+  rainInterval=setInterval(()=>{
+    if(!gameActive){clearInterval(rainInterval);return;}
+    if(slotIndex>=maxDroplets){clearInterval(rainInterval);return;}
+    if(idx>=seq.length){seq=buildSpacedSequence(words);idx=0;}
+    if(activeDrops.length>=3)return;
+    createRainDrop(seq[idx++]);
+  },1600);
+}
+
+// قطره از دل ابر شروع به باریدن می‌کند
+function createRainDrop(word){
+  const container=document.getElementById('rain-container');
+  const ci=pickCloudLane();
+  const cd=cloudDefs[ci];
+  const cloudX=(cd.leftPct/100)*window.innerWidth;
+  const x=cloudX+10+Math.random()*18;
+  const startY=cd.top+58;
+  const el=document.createElement('div');el.className='rain-drop';
+  el.style.left=x+'px';el.style.top=startY+'px';el.style.animationDelay=(Math.random()*1.5)+'s';
+  el.innerHTML=`<svg viewBox="0 0 100 130">
+      <path class="drop-body" d="M50 6 C50 6 14 48 14 74 C14 96 30 112 50 112 C70 112 86 96 86 74 C86 48 50 6 50 6 Z"/>
+      <ellipse class="drop-shine" cx="36" cy="66" rx="9" ry="16" transform="rotate(-18 36 66)"/>
+    </svg><span class="drop-text">${word.text}</span>`;
+  el.addEventListener('click',()=>handleDropTap(el));
+  el.addEventListener('touchstart',e=>{e.preventDefault();handleDropTap(el);});
+  container.appendChild(el);
+  activeDrops.push({el,x,y:startY,word,cloudIdx:ci,active:true,speed:1.0+Math.random()*.5});
+}
+function handleDropTap(el){
+  const d=activeDrops.find(x=>x.el===el);
+  if(!gameActive||!d||!d.active)return;
+  d.active=false;removeFromActive(d);
+  const isCorrect=d.word.correct;
+  spawnCatchBucket(d.x,d.y,isCorrect);
+  if(isCorrect){
+    el.classList.add('caught-correct');
+    const idx=slotIndex;
+    playAabSound();setTimeout(playCoinSound,320);
+    showGoldenWord(d.word.text,idx,()=>fillSlot(true));
+  }else{
+    el.classList.add('caught-wrong');
+    playWrongSound();
+    fillSlot(false);
+  }
+  setTimeout(()=>el.remove(),700);
+}
+function startGameLoop(){if(animFrame)cancelAnimationFrame(animFrame);gameLoop();}
+function gameLoop(){
+  if(!gameActive)return;
+  const splashY=window.innerHeight-150;
+  for(let i=activeDrops.length-1;i>=0;i--){
+    const d=activeDrops[i];if(!d.active)continue;
+    d.y+=d.speed;d.el.style.top=d.y+'px';
+    if(d.y>splashY){
+      createSplash(d.x+57,splashY+125);
+      playSplash();
+      d.active=false;d.el.remove();removeFromActive(d);
+      processedCount++;
+    }
+  }
+  animFrame=requestAnimationFrame(gameLoop);
+}
+function removeFromActive(d){const i=activeDrops.indexOf(d);if(i>-1)activeDrops.splice(i,1);}
+
+function createSplash(x,y){
+  for(let i=0;i<10;i++){
+    const p=document.createElement('div');p.className='splash-p';
+    p.style.left=x+'px';p.style.top=y+'px';
+    const ang=(Math.PI*2/10)*i;const dist=25+Math.random()*25;
+    p.style.setProperty('--sx',Math.cos(ang)*dist+'px');
+    p.style.setProperty('--sy',(Math.sin(ang)*dist-30)+'px');
+    document.body.appendChild(p);setTimeout(()=>p.remove(),650);
+  }
+}
+
+function bucketFaceSVG(happy){
+  const mouth=happy?'M38 60 Q55 76 72 60':'M38 70 Q55 58 72 70';
+  const cheeks=happy?'<circle cx="33" cy="56" r="4.5" fill="rgba(255,130,150,.55)"/><circle cx="77" cy="56" r="4.5" fill="rgba(255,130,150,.55)"/>':'';
+  const tear=happy?'':'<ellipse cx="72" cy="56" rx="3" ry="5" fill="#4FC3F7" opacity=".85"/>';
+  const gid='bg'+(happy?'h':'s')+Math.random().toString(36).substr(2,5);
+  return `<svg viewBox="0 0 110 100">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6D4C41"/><stop offset="30%" stop-color="#A1887F"/>
+      <stop offset="55%" stop-color="#8D6E63"/><stop offset="80%" stop-color="#5D4037"/>
+      <stop offset="100%" stop-color="#4E342E"/></linearGradient></defs>
+    <path d="M16 22 L22 78 C22 84 28 90 34 90 L76 90 C82 90 88 84 88 78 L94 22 Z" fill="url(#${gid})" stroke="#3E2723" stroke-width="2.5"/>
+    <circle cx="35" cy="48" r="2.5" fill="rgba(0,0,0,.2)"/>
+    <circle cx="62" cy="66" r="3" fill="rgba(0,0,0,.18)"/>
+    <circle cx="76" cy="44" r="2" fill="rgba(255,255,255,.25)"/>
+    <ellipse cx="55" cy="22" rx="39" ry="9" fill="#BCAAA4" stroke="#3E2723" stroke-width="2"/>
+    <ellipse cx="55" cy="22" rx="30" ry="6" fill="#29B6F6" opacity=".7"/>
+    <g class="bk-eyes">
+      <ellipse cx="42" cy="46" rx="5" ry="7" fill="#1A1A1A"/>
+      <ellipse cx="68" cy="46" rx="5" ry="7" fill="#1A1A1A"/>
+    </g>
+    ${cheeks}${tear}
+    <path d="${mouth}" stroke="#1A1A1A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+function spawnCatchBucket(x,y,isCorrect){
+  const b=document.createElement('div');b.className='catch-bucket';
+  b.style.left=x+'px';b.style.top=(y+35)+'px';
+  b.innerHTML=`<div class="cb-inner ${isCorrect?'happy':'sad'}">${bucketFaceSVG(isCorrect)}</div>`;
+  document.getElementById('rain-container').appendChild(b);
+  requestAnimationFrame(()=>b.classList.add('show'));
+  setTimeout(()=>{b.classList.add('fadeout');setTimeout(()=>b.remove(),400);},1200);
+}
+
+function showGoldenWord(text,slotIdx,onDone){
+  const ov=document.createElement('div');ov.className='golden-overlay';
+  const w=document.createElement('div');w.className='golden-word';w.textContent=text;
+  ov.appendChild(w);document.body.appendChild(ov);
+  requestAnimationFrame(()=>ov.classList.add('show'));
+  setTimeout(()=>{
+    const target=document.querySelectorAll('.ind-drop')[slotIdx];
+    if(target){
+      const r=target.getBoundingClientRect();
+      const dx=r.left+r.width/2-window.innerWidth/2;
+      const dy=r.top+r.height/2-window.innerHeight/2;
+      w.style.transition='transform .8s cubic-bezier(.5,-.3,1,1),opacity .8s';
+      w.style.transform=`translate(${dx}px,${dy}px) scale(.08) rotate(720deg)`;
+      w.style.opacity='0';
+    }
+    setTimeout(()=>{ov.remove();if(onDone)onDone();},820);
+  },1000);
+}
+
+function completeStage(){
+  if(!gameActive)return;
+  gameActive=false;
+  if(rainInterval){clearInterval(rainInterval);rainInterval=null;}
+  if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
+  const litCount=document.querySelectorAll('.ind-drop.lit').length;
+  const success=(litCount>=maxDroplets);
+  const overlayStar=document.getElementById('overlay-star');
+  overlayStar.classList.remove('lit');
+  if(currentStage<4){
+    if(success){starsEarned++;lightStar(starsEarned);overlayStar.classList.add('lit');
+      document.getElementById('stage-overlay-text').textContent=`آفرین ${playerName} جان! ستاره این مرحله رو گرفتی! آماده مرحله بعد هستی؟`;}
+    else{document.getElementById('stage-overlay-text').textContent=`آفرین ${playerName} جان! تلاش خوبی بود! آماده مرحله بعد هستی؟`;}
+    document.getElementById('stage-overlay').classList.add('show');
+  }else{
+    if(success){starsEarned++;lightStar(starsEarned);}
+    showResults();
+  }
+}
+function closeStageOverlay(){
+  playWaterDrop();
+  document.getElementById('stage-overlay').classList.remove('show');
+  showCountdown(()=>startStage(currentStage+1));
+}
+
+function showResults(){
+  document.getElementById('game-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.remove('hidden');
+  let html='';
+  for(let i=1;i<=4;i++){
+    if(i<=starsEarned)html+=`<span class="r-star earned" style="animation-delay:${i*0.15}s">⭐</span>`;
+    else html+=`<span class="r-star empty">☆\uFE0E</span>`;
+  }
+  document.getElementById('result-stars').innerHTML=html;
+  const guardianEl=document.getElementById('guardian-title'),msgEl=document.getElementById('result-message');
+  if(starsEarned===4){
+    guardianEl.style.display='block';
+    msgEl.innerHTML=`آفرین <b>${playerName}</b> جان! تو «نگهبان آب‌ها» شدی! 🏅<br>سعی کن همیشه در حفظ و نگهداری از آب‌ها کوشا باشی.`;
+    playCoinSound();
+  }else{
+    guardianEl.style.display='none';
+    msgEl.innerHTML=`آفرین <b>${playerName}</b> جان! تو ${toFa(starsEarned)} ستاره گرفتی.<br>دوباره تلاش کن تا همه ستاره‌ها رو بگیری و نگهبان آب‌ها بشی!`;
+  }
+}
+function restartGame(){
+  playWaterDrop();starsEarned=0;currentStage=1;
+  for(let i=1;i<=4;i++){document.getElementById('star-'+i).classList.remove('lit');}
+  document.getElementById('result-screen').classList.add('hidden');
+  document.getElementById('game-screen').classList.remove('hidden');
+  showCountdown(()=>startStage(1));
+}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+window.addEventListener('load',()=>{
+  buildOcean();buildRainClouds();createParticles();startSparkles();
+  document.getElementById('student-name').addEventListener('keypress',e=>{if(e.key==='Enter')startGame();});
+});
+document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('dblclick',e=>e.preventDefault());
+</script>
+</body>
+</html>
